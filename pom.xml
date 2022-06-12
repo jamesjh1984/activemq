@@ -41,6 +41,13 @@
       <version>2.13.2.2</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.xbean/xbean-spring -->
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-spring</artifactId>
+      <version>4.21</version>
+    </dependency>
+
   </dependencies>
 
   <build>
