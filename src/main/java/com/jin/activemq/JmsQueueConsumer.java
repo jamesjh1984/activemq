@@ -5,6 +5,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.*;
 import java.io.IOException;
 
+/* 
+    Queue: 1 --> 1
+    1. Run JmsQueueProducer, means "send"
+    2. Run JmsQueueConsumer, means "receive"
+*/
 public class JmsQueueConsumer {
 
     // 8161(管理端口)，61616(服务端口)，将8161改为61616，问题即可解决。

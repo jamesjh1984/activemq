@@ -5,6 +5,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.*;
 import java.io.IOException;
 
+/* 
+    Topic: 1 --> many
+    1. Run JmsTopicConsumer, means "subscribe first"
+    2. Run JmsTopicProducer, means "publish then"
+*/
 public class JmsTopicConsumer {
 
     // 8161(管理端口)，61616(服务端口)，将8161改为61616，问题即可解决。
