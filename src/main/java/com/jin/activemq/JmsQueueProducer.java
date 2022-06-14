@@ -4,7 +4,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 
-public class JmsConsumer {
+public class JmsQueueProducer {
 
     // 8161(管理端口)，61616(服务端口)，将8161改为61616，问题即可解决。
     public static final String ACTIVEMQ_URL = "tcp://127.0.0.1:61616";
@@ -24,24 +24,25 @@ public class JmsConsumer {
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         // 创建目的地 (queue or topic)
-        // Destination destination = session.createQueue(QUEUE_NAME);
         Queue queue = session.createQueue(QUEUE_NAME);
 
         // *****************************************
-        // 创建消费者
-        MessageConsumer messageConsumer = session.createConsumer(queue);
+        // 创建消息的生产者
+        MessageProducer messageProducer = session.createProducer(queue);
 
-        while (true) {
-            TextMessage textMessage = (TextMessage)messageConsumer.receive();
-            if (textMessage != null) {
-                System.out.println("=== Consumer has received message: [" + textMessage.getText() + "] ===");
-            } else {
-                break;
-            }
+        // 通过messageProducer生产的3条消息发送到MQ的queue里
+        for (int i = 1; i <= 3; i++) {
+            // 创建消息
+            TextMessage textMessage = session.createTextMessage("Queue_Message_" + i);
+            // 通过messageProducer发送给MQ
+            messageProducer.send(textMessage);
         }
 
-        messageConsumer.close();
+        // 关闭资源
+        messageProducer.close();
         session.close();
         connection.close();
+
+        System.out.println("=== Queue Message has sent to MQ. ===");
     }
 }

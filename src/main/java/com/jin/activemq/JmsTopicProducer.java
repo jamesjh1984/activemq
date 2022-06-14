@@ -4,11 +4,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 
-public class JmsProducer {
+public class JmsTopicProducer {
 
     // 8161(管理端口)，61616(服务端口)，将8161改为61616，问题即可解决。
     public static final String ACTIVEMQ_URL = "tcp://127.0.0.1:61616";
-    public static final String QUEUE_NAME = "queue.james.01";
+    public static final String TOPIC_NAME = "topic.james.01";
 
 
     public static void main(String[] args) throws JMSException {
@@ -24,17 +24,16 @@ public class JmsProducer {
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         // 创建目的地 (queue or topic)
-        // Destination destination = session.createQueue(QUEUE_NAME);
-        Queue queue = session.createQueue(QUEUE_NAME);
+        Topic topic = session.createTopic(TOPIC_NAME);
 
         // *****************************************
         // 创建消息的生产者
-        MessageProducer messageProducer = session.createProducer(queue);
+        MessageProducer messageProducer = session.createProducer(topic);
 
         // 通过messageProducer生产的3条消息发送到MQ的queue里
         for (int i = 1; i <= 3; i++) {
             // 创建消息
-            TextMessage textMessage = session.createTextMessage("File_" + i);
+            TextMessage textMessage = session.createTextMessage("Topic_Message_" + i);
             // 通过messageProducer发送给MQ
             messageProducer.send(textMessage);
         }
@@ -44,6 +43,6 @@ public class JmsProducer {
         session.close();
         connection.close();
 
-        System.out.println("=== Message has sent to MQ. ===");
+        System.out.println("=== Topic Message has sent to MQ. ===");
     }
 }
