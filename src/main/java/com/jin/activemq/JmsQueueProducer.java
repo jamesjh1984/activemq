@@ -35,12 +35,26 @@ public class JmsQueueProducer {
         // 创建消息的生产者
         MessageProducer messageProducer = session.createProducer(queue);
 
+        // 设置Queue消息 持久化(DeliveryMode.PERSISTENT)或非持久化(DeliveryMode.NON_PERSISTENT)
+        // 持久化(默认)：当服务器宕机，消息仍存在
+        // 非持久化：当服务器宕机，消息不存在
+        messageProducer.setDeliveryMode(DeliveryMode.PERSISTENT);
+//        messageProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+
         // 通过messageProducer生产的3条消息发送到MQ的queue里
         for (int i = 1; i <= 3; i++) {
-            // 创建消息
-            TextMessage textMessage = session.createTextMessage("Queue_Message_" + i);
+            // 创建TextMessage
+            TextMessage textMessage = session.createTextMessage("Queue_TextMessage_" + i);
+            // setStringProperty
+            textMessage.setStringProperty("c01", "vip");
             // 通过messageProducer发送给MQ
             messageProducer.send(textMessage);
+
+            // 创建MapMessage
+//            MapMessage mapMessage = session.createMapMessage();
+//            mapMessage.setString("k1","Queue_MapMessage_v1");
+//            messageProducer.send(mapMessage);
         }
 
         // 关闭资源

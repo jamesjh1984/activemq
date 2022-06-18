@@ -57,14 +57,27 @@ public class JmsQueueConsumer {
         messageConsumer.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {
+                // TextMessage
                 if(message != null && message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage)message;
                     try {
-                        System.out.println("=== Consumer has received queue message: [" + textMessage.getText() + "] ===");
+                        System.out.println("=== Consumer received queue message: [" + textMessage.getText() + "] ===");
+//                        System.out.println("=== Consumer received queue message property: [" + textMessage.getStringProperty("c01") + "] ===");
                     } catch (JMSException e) {
                         e.printStackTrace();
                     }
                 }
+
+//                // MapMessage
+//                if(message != null && message instanceof MapMessage) {
+//                    MapMessage mapMessage = (MapMessage)message;
+//                    try {
+//                        System.out.println("=== Consumer received queue message: [" + mapMessage.getString("k1") + "] ===");
+//                    } catch (JMSException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+
             }
         });
         System.in.read(); // 保证控制台不灭，直到消费完了才关闭
