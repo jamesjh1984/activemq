@@ -26,8 +26,13 @@ public class JmsQueueConsumerTX {
         Connection connection = activeMQConnectionFactory.createConnection();
         connection.start();
 
-        // 创建会话， 两个参数: 事务，签收
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        // 创建会话， 两个参数:
+        // 消费者事务：false - 自动提交； true - 需加commit()提交，不然会重复消费
+        // 签收：主要针对消费者；AUTO_ACKNOWLEDGE - 自动签收
+        //                   CLIENT_ACKNOWLEDGE - 调用textMessage.acknowledge()手动签收
+        //                   DUPS_OK_ACKNOWLEDGE - 允许重复消息
+//        Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+        Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
         // 创建目的地 (queue or topic)
         // Destination destination = session.createQueue(QUEUE_NAME);
@@ -46,6 +51,7 @@ public class JmsQueueConsumerTX {
             TextMessage textMessage = (TextMessage)messageConsumer.receive(4000L);
             if (textMessage != null) {
                 System.out.println("=== Consumer has received TX message: [" + textMessage.getText() + "] ===");
+                textMessage.acknowledge();
             } else {
                 break;
             }
@@ -86,6 +92,7 @@ public class JmsQueueConsumerTX {
 
 
         messageConsumer.close();
+//        session.commit(); // 事务消息需提交
         session.close();
         connection.close();
     }

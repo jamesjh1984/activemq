@@ -25,7 +25,12 @@ public class JmsQueueProducerTX {
         Connection connection = activeMQConnectionFactory.createConnection();
         connection.start();
 
-        // 创建会话， 两个参数: 事务，签收
+        // 创建会话， 两个参数:
+        // 生产者事务：false - 自动提交； true - 需加commit()提交
+        // 签收：主要针对消费者；AUTO_ACKNOWLEDGE - 自动签收
+        //                   CLIENT_ACKNOWLEDGE - 调用textMessage.acknowledge()手动签收
+        //                   DUPS_OK_ACKNOWLEDGE - 允许重复消息
+//        Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         // 创建目的地 (queue or topic)
@@ -59,6 +64,7 @@ public class JmsQueueProducerTX {
 
         // 关闭资源
         messageProducer.close();
+//        session.commit(); // 事务消息需提交
         session.close();
         connection.close();
 
